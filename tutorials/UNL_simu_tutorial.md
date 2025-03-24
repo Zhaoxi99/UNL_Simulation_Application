@@ -1,24 +1,25 @@
----
-title: "Tutorial for Simulation study in the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\" " 
-author: "Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho"
-output: github_document
-#bibliography: reference.bib
-#csl: modern-language-association.csl
----
+Tutorial for Simulation study in the paper “The Underlap Coefficient as
+Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease
+Setting”
+================
+Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho
 
-In this tutorial we describe the steps for obtaining the results of the Simulation study in Section 4 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
+In this tutorial we describe the steps for obtaining the results of the
+Simulation study in Section 4 of the paper "The Underlap Coefficient as
+Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease
+Setting".
 
-As a preliminary step, we load on a clean environment all the required libraries.
+As a preliminary step, we load on a clean environment all the required
+libraries.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+The code described below requires the installation of the UNL.est
+package, available in this repository. See the README for instructions
+on the installation.
 
+As a preliminary step, we load on a clean environment all the required
+libraries.
 
-The code described below requires the installation of the UNL.est package, available in this repository. See the README for instructions on the installation.
-
-As a preliminary step, we load on a clean environment all the required libraries.
-```{r, eval=FALSE}
+``` r
 library(LSBP)    # Load the LSBP package
 library(ggplot2) # Graphical library
 library(coda)    # For MCMC analysis
@@ -32,13 +33,37 @@ library(future.apply)
 library(rjags)
 ```
 
-We need to load some predefined functions the simulation study in the unconditional case. 
-```{r}
+We need to load some predefined functions the simulation study in the
+unconditional case.
+
+``` r
 source("../functions/unconditional_simulation_functions.R")
 ```
 
-Because we conduct the estimation of underlap repeatedly for 100 datasets in each scenario, so the process could be accelerated by parallelizing the computation. Here I use the future package to demonstrate one way of parallelizing the code, the utilization of the future package is incorporated in the simulation_unl_uncon function.
-```{r, eval=FALSE}
+    ## 载入需要的程序包：stats4
+
+    ## 
+    ## 载入程序包：'sn'
+
+    ## The following object is masked from 'package:pracma':
+    ## 
+    ##     zeta
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     sd
+
+    ## Linked to JAGS 4.3.1
+
+    ## Loaded modules: basemod,bugs
+
+Because we conduct the estimation of underlap repeatedly for 100
+datasets in each scenario, so the process could be accelerated by
+parallelizing the computation. Here I use the future package to
+demonstrate one way of parallelizing the code, the utilization of the
+future package is incorporated in the simulation_unl_uncon function.
+
+``` r
 plan(multisession, workers = detectCores()-2)
 nrep=100;nsave=5000;nburn=2000
 nlist1=list(n1=100,n2=100,n3=100)
@@ -103,12 +128,10 @@ simu_unconc9_s4=simulation_unl_uncon(case=9,nlist=nlist4,nrep=nrep,nsave=nsave,n
 simu_unconc9_s5=simulation_unl_uncon(case=9,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
 ```
 
-```{r, include=FALSE}
-load("//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/simulation_data/simu_uncon_dpm.RData")
-```
+We need to use the function tranform_list_simu to transform the results
+from future_lapply to a more interpretable manner.
 
-We need to use the function tranform_list_simu to transform the results from future_lapply to a more interpretable manner.
-```{r}
+``` r
 simu_unconc1_s1=tranform_list_simu(simu_unconc1_s1,nsave=nsave,nrep = nrep)
 simu_unconc1_s2=tranform_list_simu(simu_unconc1_s2,nsave=nsave,nrep = nrep)
 simu_unconc1_s3=tranform_list_simu(simu_unconc1_s3,nsave=nsave,nrep = nrep)
@@ -164,8 +187,11 @@ simu_unconc9_s4=tranform_list_simu(simu_unconc9_s4,nsave=nsave,nrep = nrep)
 simu_unconc9_s5=tranform_list_simu(simu_unconc9_s5,nsave=nsave,nrep = nrep)
 ```
 
-We can then calculate the posterior medians, the 95% credible intervals, the width of the 95% credible intervals, and the coverage of the 95% credible intervals of UNL estimates in each scenario.
-```{r}
+We can then calculate the posterior medians, the 95% credible intervals,
+the width of the 95% credible intervals, and the coverage of the 95%
+credible intervals of UNL estimates in each scenario.
+
+``` r
 for(case_i in 1:9){
   median_name=paste("median_uncon","c",case_i,sep="")
   simu_name1=paste("simu_uncon","c",case_i,"_s1",sep="")
@@ -229,9 +255,12 @@ for(case_i in 1:9){
 ```
 
 ## Posterior median boxplots
-We can make boxplots of the posterior median of the coefficient of underlap across 100 simulated datasets
-for different parameter configurations and sample sizes as following.
-```{r}
+
+We can make boxplots of the posterior median of the coefficient of
+underlap across 100 simulated datasets for different parameter
+configurations and sample sizes as following.
+
+``` r
 theme_set(theme_bw())
 median_box_unconc1=ggplot(median_unconc1, aes(x=size, y=UNL)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=1), linetype = "solid", color = "red")+
@@ -351,15 +380,21 @@ median_box_unconc9=ggplot(median_unconc9, aes(x=size, y=UNL)) +
   )
 ```
 
-```{r}
+``` r
 cowplot::plot_grid(median_box_unconc1,median_box_unconc2,median_box_unconc3,
                    median_box_unconc4,median_box_unconc5,median_box_unconc6,
                    median_box_unconc7,median_box_unconc8,median_box_unconc9,ncol = 3)
 ```
 
+![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 ## 95% CI width boxplots
-We can make the boxplot of the width of the 95% credible intervals of the coefficient of underlap across 100 simulated datasets for varying parameter configurations and sample sizes as following.
-```{r}
+
+We can make the boxplot of the width of the 95% credible intervals of
+the coefficient of underlap across 100 simulated datasets for varying
+parameter configurations and sample sizes as following.
+
+``` r
 ##width box plots
 theme_set(theme_bw())
 width_box_unconc1=ggplot() + geom_boxplot(data=width_unconc1, aes(x=size, y=width))+
@@ -477,14 +512,10 @@ width_box_unconc9=ggplot(width_unconc9, aes(x=size, y=width)) +
   )
 ```
 
-```{r}
+``` r
 cowplot::plot_grid(width_box_unconc1,width_box_unconc2,width_box_unconc3,
                    width_box_unconc4,width_box_unconc5,width_box_unconc6,
                    width_box_unconc7,width_box_unconc8,width_box_unconc9,ncol = 3)
 ```
 
-
-
-
-
-
+![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
