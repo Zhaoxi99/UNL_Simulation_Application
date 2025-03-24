@@ -1,0 +1,48 @@
+---
+title: "Tutorial for Simulation study in the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\" " 
+author: "Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho"
+output: github_document
+#bibliography: reference.bib
+#csl: modern-language-association.csl
+---
+
+In this tutorial we describe the steps for obtaining the results of the Simulation study in Section 4 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
+
+As a preliminary step, we load on a clean environment all the required libraries.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+The code described below requires the installation of the UNL.est package, available in this repository. See the README for instructions on the installation.
+
+```{r, include=FALSE}
+load(file="D:/PhD_study2_desktop/functions/results/cluster_tutorial_results.RData")
+library(ggplot2)
+```
+
+As a preliminary step, we load on a clean environment all the required libraries.
+```{r, eval=FALSE}
+library(LSBP)    # Load the LSBP package
+library(ggplot2) # Graphical library
+library(coda)    # For MCMC analysis
+library(splines) # For computing the natural B-splines basis
+library(pracma)
+library(DIRECT)
+library(sn)
+library(nor1mix)
+library(future)
+library(future.apply)
+library(rjags)
+```
+
+Also, for illustration purpose, we load some functions for clustering based on the linear dependent Dirichlet process (LDDP) mixture models which are not the focus of the UNL.est package. 
+```{r, eval=FALSE}
+source("functions/unconditional_simulation_functions.R")
+```
+
+```{r, eval=FALSE}
+getwd()
+```
+
