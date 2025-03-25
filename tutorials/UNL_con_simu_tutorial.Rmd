@@ -1,0 +1,41 @@
+---
+title: "Tutorial for Simulation study in the unconditional case in the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\" " 
+author: "Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho"
+output: github_document
+#bibliography: reference.bib
+#csl: modern-language-association.csl
+---
+
+In this tutorial we describe the steps for obtaining the results of the simulation study in the unconditional case in Section 5.1 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
+
+As a preliminary step, we load on a clean environment all the required libraries.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As a preliminary step, we load on a clean environment all the required libraries.
+```{r, eval=FALSE}
+library(LSBP)    # Load the LSBP package
+library(ggplot2) # Graphical library
+library(coda)    # For MCMC analysis
+library(splines) # For computing the natural B-splines basis
+library(pracma)
+library(DIRECT)
+library(sn)
+library(nor1mix)
+library(future)
+library(future.apply)
+library(rjags)
+```
+
+We need to load some predefined functions the simulation study in the unconditional case. 
+```{r, include=FALSE}
+source("../functions/unconditional_simulation_functions.R")
+```
+
+```{r, eval=FALSE}
+source("../functions/unconditional_simulation_functions.R")
+```
+
+Because we conduct the estimation of underlap repeatedly for 100 datasets in each scenario, so the process could be accelerated by parallelizing the computation. Here I use the future package to demonstrate one way of parallelizing the code, the utilization of the future package is incorporated in the simulation_unl_uncon function.
