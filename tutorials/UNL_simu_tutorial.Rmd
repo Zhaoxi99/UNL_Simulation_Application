@@ -6,7 +6,7 @@ output: github_document
 #csl: modern-language-association.csl
 ---
 
-In this tutorial we describe the steps for obtaining the results of the Simulation study in Section 4 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
+In this tutorial we describe the steps for obtaining the results of the simulation study in the unconditional case in Section 5.1 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
 
 As a preliminary step, we load on a clean environment all the required libraries.
 
@@ -33,7 +33,11 @@ library(rjags)
 ```
 
 We need to load some predefined functions the simulation study in the unconditional case. 
-```{r}
+```{r, include=FALSE}
+source("../functions/unconditional_simulation_functions.R")
+```
+
+```{r, eval=FALSE}
 source("../functions/unconditional_simulation_functions.R")
 ```
 

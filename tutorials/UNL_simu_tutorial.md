@@ -5,9 +5,9 @@ Setting”
 Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho
 
 In this tutorial we describe the steps for obtaining the results of the
-Simulation study in Section 4 of the paper "The Underlap Coefficient as
-Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease
-Setting".
+simulation study in the unconditional case in Section 5.1 of the paper
+"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory
+Ability in a Three-Class Disease Setting".
 
 As a preliminary step, we load on a clean environment all the required
 libraries.
@@ -39,23 +39,6 @@ unconditional case.
 ``` r
 source("../functions/unconditional_simulation_functions.R")
 ```
-
-    ## 载入需要的程序包：stats4
-
-    ## 
-    ## 载入程序包：'sn'
-
-    ## The following object is masked from 'package:pracma':
-    ## 
-    ##     zeta
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     sd
-
-    ## Linked to JAGS 4.3.1
-
-    ## Loaded modules: basemod,bugs
 
 Because we conduct the estimation of underlap repeatedly for 100
 datasets in each scenario, so the process could be accelerated by
@@ -386,7 +369,7 @@ cowplot::plot_grid(median_box_unconc1,median_box_unconc2,median_box_unconc3,
                    median_box_unconc7,median_box_unconc8,median_box_unconc9,ncol = 3)
 ```
 
-![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ## 95% CI width boxplots
 
@@ -518,4 +501,4 @@ cowplot::plot_grid(width_box_unconc1,width_box_unconc2,width_box_unconc3,
                    width_box_unconc7,width_box_unconc8,width_box_unconc9,ncol = 3)
 ```
 
-![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](UNL_simu_tutorial_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
