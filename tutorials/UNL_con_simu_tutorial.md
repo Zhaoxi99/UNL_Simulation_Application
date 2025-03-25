@@ -1,19 +1,18 @@
----
-title: "Tutorial for Simulation study in the covariate-specific case in the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\" " 
-author: "Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho"
-output: github_document
-#bibliography: reference.bib
-#csl: modern-language-association.csl
----
+Tutorial for Simulation study in the covariate-specific case in the
+paper “The Underlap Coefficient as Measure of a Biomarker’s
+Discriminatory Ability in a Three-Class Disease Setting”
+================
+Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho
 
-In this tutorial we describe the steps for obtaining the results of the simulation study in the covariate-specific case in Section 5.2 of the paper \"The Underlap Coefficient as Measure of a Biomarker’s Discriminatory Ability in a Three-Class Disease Setting\".
+In this tutorial we describe the steps for obtaining the results of the
+simulation study in the covariate-specific case in Section 5.2 of the
+paper "The Underlap Coefficient as Measure of a Biomarker’s
+Discriminatory Ability in a Three-Class Disease Setting".
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+As a preliminary step, we load on a clean environment all the required
+libraries.
 
-As a preliminary step, we load on a clean environment all the required libraries.
-```{r, eval=FALSE}
+``` r
 library(LSBP)    # Load the LSBP package
 library(ggplot2) # Graphical library
 library(coda)    # For MCMC analysis
@@ -27,23 +26,20 @@ library(future.apply)
 library(rjags)
 ```
 
-We need to load some predefined functions for the simulation study in the covariate-specific case. 
-```{r, include=FALSE}
+We need to load some predefined functions for the simulation study in
+the covariate-specific case.
+
+``` r
 source("../functions/conditional_simulation_functions.R")
 ```
 
-```{r, eval=FALSE}
-source("../functions/conditional_simulation_functions.R")
-```
+Because we conduct the estimation of underlap repeatedly for 100
+datasets in each scenario, so the process could be accelerated by
+parallelizing the computation. Here I use the future package to
+demonstrate one way of parallelizing the code, the utilization of the
+future package is incorporated in the simulation_unl_con_best function.
 
-Because we conduct the estimation of underlap repeatedly for 100 datasets in each scenario, so the process could be accelerated by parallelizing the computation. Here I use the future package to demonstrate one way of parallelizing the code, the utilization of the future package is incorporated in the simulation_unl_con_best function.
-```{r, include=FALSE}
-load(file="//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/simulation_data/con_best/kernel/best_simu_con_s1.RData")
-load(file="//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/simulation_data/con_best/kernel/best_simu_con_s2.RData")
-load(file="//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/simulation_data/con_best/kernel/best_simu_con_s3.RData")
-```
-
-```{r, eval=FALSE}
+``` r
 nlist1=list(n1=100,n2=100,n3=100)
 nlist2=list(n1=200,n2=200,n3=200)
 nlist3=list(n1=500,n2=500,n3=500)
@@ -70,8 +66,10 @@ simu_conc3_s4=simulation_unl_con_best(case=3,nlist=nlist4,nrep=100)
 simu_conc3_s5=simulation_unl_con_best(case=3,nlist=nlist5,nrep=100)
 ```
 
-We need to use the function tranform_list_simu to transform the results from future_lapply to a more interpretable manner.
-```{r}
+We need to use the function tranform_list_simu to transform the results
+from future_lapply to a more interpretable manner.
+
+``` r
 simu_conc1_s1=tranform_list_simu_con(simu_conc1_s1)
 simu_conc1_s2=tranform_list_simu_con(simu_conc1_s2)
 simu_conc1_s3=tranform_list_simu_con(simu_conc1_s3)
@@ -91,8 +89,12 @@ simu_conc3_s4=tranform_list_simu_con(simu_conc3_s4)
 simu_conc3_s5=tranform_list_simu_con(simu_conc3_s5)
 ```
 
-We can then calculate the posterior medians, the 95% quantile intervals of the posterior medians, the width of the 95% credible intervals, and the coverage of the 95% credible intervals of UNL estimates in each scenario.
-```{r}
+We can then calculate the posterior medians, the 95% quantile intervals
+of the posterior medians, the width of the 95% credible intervals, and
+the coverage of the 95% credible intervals of UNL estimates in each
+scenario.
+
+``` r
 ##mean of medians
 median_conc1_s1=apply(apply(simu_conc1_s1,FUN = median,MARGIN = c(1,3)),FUN = mean,MARGIN = 2)
 median_conc1_s2=apply(apply(simu_conc1_s2,FUN = median,MARGIN = c(1,3)),FUN = mean,MARGIN = 2)
@@ -328,8 +330,13 @@ plot_con_width=data.frame(x.points=x.points,
 ```
 
 ## Posterior median plots
-We can then compare of the posterior median of the coefficient of underlap across 100 simulated datasets with the underlying true underlap values for different parameter configurations and sample sizes as following.
-```{r}
+
+We can then compare of the posterior median of the coefficient of
+underlap across 100 simulated datasets with the underlying true underlap
+values for different parameter configurations and sample sizes as
+following.
+
+``` r
 theme_set(theme_bw())
 plot_con_c1_s1=ggplot() +
   geom_line(aes(x.points,true_unl_c1 ),linewidth=1,color="black") +
@@ -544,16 +551,22 @@ plot_con_c3_s5=ggplot() +
   )
 ```
 
-```{r, fig.width=15, fig.height=25,dpi=300}
+``` r
 cowplot::plot_grid(plot_con_c1_s1,plot_con_c1_s2,plot_con_c1_s3,plot_con_c1_s4,plot_con_c1_s5,
                    plot_con_c2_s1,plot_con_c2_s2,plot_con_c2_s3,plot_con_c2_s4,plot_con_c2_s5,
                    plot_con_c3_s1,plot_con_c3_s2,plot_con_c3_s3,plot_con_c3_s4,plot_con_c3_s5,
                    byrow = FALSE,ncol = 3)
 ```
 
+![](UNL_con_simu_tutorial_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 ## Coverage vs covariate plots
-We can show the empirical coverage 95% credible intervals of the coefficient of underlap across 100 simulated datasets for varying parameter configurations and sample sizes as following.
-```{r}
+
+We can show the empirical coverage 95% credible intervals of the
+coefficient of underlap across 100 simulated datasets for varying
+parameter configurations and sample sizes as following.
+
+``` r
 plot_con_coverage_c1_s1=ggplot(plot_con_coverage) +
   geom_line(aes(x.points, coverage_conc1_s1 ),linewidth=1,color="black") +
   geom_hline(yintercept = 0.95, color = "red",linewidth=1) +
@@ -752,47 +765,11 @@ plot_con_coverage_c3_s5=ggplot(plot_con_coverage) +
   )
 ```
 
-```{r, fig.width=15, fig.height=25,dpi=300}
+``` r
 cowplot::plot_grid(plot_con_coverage_c1_s1,plot_con_coverage_c1_s2,plot_con_coverage_c1_s3,plot_con_coverage_c1_s4,plot_con_coverage_c1_s5,
                    plot_con_coverage_c2_s1,plot_con_coverage_c2_s2,plot_con_coverage_c2_s3,plot_con_coverage_c2_s4,plot_con_coverage_c2_s5,
                    plot_con_coverage_c3_s1,plot_con_coverage_c3_s2,plot_con_coverage_c3_s3,plot_con_coverage_c3_s4,plot_con_coverage_c3_s5,
                    byrow = FALSE,ncol = 3)
 ```
 
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-```{r, eval=FALSE}
-
-```
-
-
-
-
-
-
+![](UNL_con_simu_tutorial_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
