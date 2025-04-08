@@ -5,7 +5,7 @@ Discriminatory Ability”
 Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho
 
 In this tutorial we describe the steps for obtaining the results of the
-simulation study in the covariate-specific case in Section 5.2 of the
+simulation study in the covariate-specific case in Section 4.2 of the
 paper "The Underlap Coefficient as Measure of a Biomarker’s
 Discriminatory Ability".
 

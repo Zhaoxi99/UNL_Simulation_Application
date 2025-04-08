@@ -5,7 +5,7 @@ Ability”
 Zhaoxi Zhang, Vanda Inácio, and Miguel de Carvalho
 
 In this tutorial we describe the steps for obtaining the results of the
-simulation study in the unconditional case in Section 5.1 of the paper
+simulation study in the unconditional case in Section 4.1 of the paper
 "The Underlap Coefficient as Measure of a Biomarker’s Discriminatory
 Ability".
 
