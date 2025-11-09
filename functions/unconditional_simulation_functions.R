@@ -414,7 +414,6 @@ gen_data_uncon<-function(case,n1=200,n2=200,n3=200,nrep=100){
 }
 
 
-#case=1;n1=200;n2=500;n3=100;nrep=10
 simulation_unl_uncon<-function(case,nlist,nrep,nsave=5000,nburn=2000){
   n1=nlist$n1;n2=nlist$n2;n3=nlist$n3
   set.seed(25)
@@ -463,7 +462,6 @@ fit_and_cal_unl<-function(l,data_con,prior,mcmc,lgrid){
   
   niter <- nrow(res1$Mu) 
   Est_UNL1 <- numeric(niter)
-  Est_UNL2 <- numeric(niter)
   
   for(r in 1:niter){
     aux_dens_1 <- norMix(mu = res1$Mu[r,], sigma = sqrt(res1$Sigma2[r,]), w = res1$P[r,])
@@ -477,24 +475,115 @@ fit_and_cal_unl<-function(l,data_con,prior,mcmc,lgrid){
     dens_max <- pmax(dens_1, dens_2, dens_3)
     Est_UNL1[r] <- simpson_inte(y_grid, dens_max)
     
-    inte_unl=simpson_inte(y_grid, pmax(dens_1,dens_2,dens_3))
-    Est_UNL2[r]=1+0.25*inte_unl
-    
   }
-  Est_UNL=cbind(Est_UNL1,Est_UNL2)
+  return(Est_UNL1)
+}
+
+simulation_unl_uncon_bb<-function(case,nlist,nrep,nsave=5000,nburn=2000){
+  n1=nlist$n1;n2=nlist$n2;n3=nlist$n3
+  set.seed(25)
+  data_con=gen_data_uncon(case = case,n1=n1,n2=n2,n3=n3,nrep=nrep)
+  
+  prior <- list(m0 = 0, S0 = 10, a = 2, b = 0.5, alpha = 1, L = 20)
+  mcmc <- list(nsave = nsave, nburn = nburn, nskip = 1)
+  lgrid <- 501
+  
+  nrep_list <- list()
+  for (i in 1:nrep) {
+    nrep_list[[as.character(i)]] <- i
+  }
+  Est_UNL=future_lapply(X=nrep_list,FUN=fit_and_cal_unl_bb,data_con=data_con,prior=prior,mcmc=mcmc,
+                        lgrid=lgrid,future.seed = TRUE)
   return(Est_UNL)
 }
 
+unl_dpm_bb <- function(y1, y2, y3, object_1, object_2, object_3){
+  niter <- nrow(object_1$Mu) 
+  coef_underlap <- numeric(niter)
+  for(l in 1:niter){
+    aux_dens_1 <- norMix(mu = object_1$Mu[l,], sigma = sqrt(object_1$Sigma2[l,]), w = object_1$P[l,])
+    aux_dens_2 <- norMix(mu = object_2$Mu[l,], sigma = sqrt(object_2$Sigma2[l,]), w = object_2$P[l,])
+    aux_dens_3 <- norMix(mu = object_3$Mu[l,], sigma = sqrt(object_3$Sigma2[l,]), w = object_3$P[l,])
+    
+    u_1 <- dnorMix(x = y1, aux_dens_1) - pmax(dnorMix(x = y1, aux_dens_2), dnorMix(x = y1, aux_dens_3))
+    u_2 <- dnorMix(x = y2, aux_dens_2) - pmax(dnorMix(x = y2, aux_dens_1), dnorMix(x = y2, aux_dens_3))
+    u_3 <- dnorMix(x = y3, aux_dens_3) - pmax(dnorMix(x = y3, aux_dens_1), dnorMix(x = y3, aux_dens_2))
+    
+    aux_weights_1 <- rgamma(n = length(unique(u_1)), shape = as.numeric(table(u_1)), rate = 1)
+    weights_1 <- aux_weights_1/sum(aux_weights_1)
+    
+    aux_weights_2 <- rgamma(n = length(unique(u_2)), shape = as.numeric(table(u_2)), rate = 1)
+    weights_2 <- aux_weights_2/sum(aux_weights_2)
+    
+    aux_weights_3 <- rgamma(n = length(unique(u_3)), shape = as.numeric(table(u_3)), rate = 1)
+    weights_3 <- aux_weights_3/sum(aux_weights_3)
+    
+    cdf_u_1 <- sum(weights_1 * (sort(unique(u_1)) < 0))
+    cdf_u_2 <- sum(weights_2 * (sort(unique(u_2)) < 0))
+    cdf_u_3 <- sum(weights_3 * (sort(unique(u_3)) < 0))
+    
+    coef_underlap[l] <- max(3 - cdf_u_1 - cdf_u_2 - cdf_u_3, 1)
+  }
+  return(coef_underlap)
+}
 
+
+#l=1
+fit_and_cal_unl_bb<-function(l,data_con,prior,mcmc,lgrid){
+  data_fitting1=data.frame(y=data_con$y1[,l])
+  data_fitting2=data.frame(y=data_con$y2[,l])
+  data_fitting3=data.frame(y=data_con$y3[,l])
+  
+  y_merge=c(data_con$y1[,l],data_con$y2[,l],data_con$y3[,l])
+  data_scaled1=data.frame(scale(data_fitting1))
+  data_scaled2=data.frame(scale(data_fitting2))
+  data_scaled3=data.frame(scale(data_fitting3))
+  
+  y_grid <- seq(from=min(y_merge)-1,to=max(y_merge)+1,length.out=lgrid)
+  y_grid1=(y_grid-mean(data_fitting1$y))/sd(data_fitting1$y)
+  y_grid2=(y_grid-mean(data_fitting2$y))/sd(data_fitting2$y)
+  y_grid3=(y_grid-mean(data_fitting3$y))/sd(data_fitting3$y)
+  
+  sd_y1=sd(data_fitting1$y)
+  sd_y2=sd(data_fitting2$y)
+  sd_y3=sd(data_fitting3$y)
+  
+  mean_y1=mean(data_fitting1$y)
+  mean_y2=mean(data_fitting2$y)
+  mean_y3=mean(data_fitting3$y)
+  
+  set.seed(123)
+  res1 <- dpm(y = data_scaled1$y, prior = prior, mcmc = mcmc, standardise = FALSE) 
+  set.seed(123)
+  res2 <- dpm(y = data_scaled2$y, prior = prior, mcmc = mcmc, standardise = FALSE) 
+  set.seed(123)
+  res3 <- dpm(y = data_scaled3$y, prior = prior, mcmc = mcmc, standardise = FALSE) 
+  
+  res1$Mu <- sd_y1*res1$Mu + mean_y1
+  res1$Sigma2 <- (sd_y1^2)*res1$Sigma2
+  
+  res2$Mu <- sd_y2*res2$Mu + mean_y2
+  res2$Sigma2 <- (sd_y2^2)*res2$Sigma2
+  
+  res3$Mu <- sd_y3*res3$Mu + mean_y3
+  res3$Sigma2 <- (sd_y3^2)*res3$Sigma2
+  
+  #niter <- nrow(res1$Mu) 
+  #Est_UNL1 <- numeric(niter)
+  set.seed(223)
+  Est_UNL1 <- unl_dpm_bb(
+    y1 = data_fitting1$y, y2 = data_fitting2$y, y3 = data_fitting3$y,
+    object_1 = res1, object_2 = res2, object_3 = res3)
+  
+  return(Est_UNL1)
+}
 
 tranform_list_simu<-function(simulation_object,nsave=5000,nrep=100){
   Est_UNL1=matrix(0,nrow=nsave,ncol=nrep)
-  Est_UNL2=matrix(0,nrow=nsave,ncol=nrep)
   counter=1
   for (i in names(simulation_object)){
-    Est_UNL1[,counter]=simulation_object[[i]][,1]
-    Est_UNL2[,counter]=simulation_object[[i]][,2]
+    Est_UNL1[,counter]=simulation_object[[i]]
     counter=counter+1
   }
-  return(list(Est_UNL1=Est_UNL1,Est_UNL2=Est_UNL2))
+  return(Est_UNL1)
 }

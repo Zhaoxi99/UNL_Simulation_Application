@@ -18,6 +18,7 @@ library(nor1mix)
 library(future)
 library(future.apply)
 library(ggplot2)
+library(dplyr)
 ```
 
 We need to load some predefined functions for the simulation study in
@@ -28,10 +29,11 @@ source("../functions/unconditional_simulation_functions.R")
 ```
 
 Because we conduct the estimation of underlap repeatedly for 100
-datasets in each scenario, so the process could be accelerated by
-parallelizing the computation. Here I use the future package to
-demonstrate one way of parallelizing the code, the utilization of the
-future package is incorporated in the simulation_unl_uncon function.
+datasets in each scenario for both the DPM estimator and the DPM-BB
+estimator, so the process could be accelerated by parallelizing the
+computation. Here I use the future package to demonstrate one way of
+parallelizing the code, the utilization of the future package is
+incorporated in the simulation_unl_uncon function.
 
 ``` r
 plan(multisession, workers = parallel::detectCores()-2)
@@ -47,7 +49,6 @@ simu_unconc1_s2=simulation_unl_uncon(case=1,nlist=nlist2,nrep=nrep,nsave=nsave,n
 simu_unconc1_s3=simulation_unl_uncon(case=1,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
 simu_unconc1_s4=simulation_unl_uncon(case=1,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
 simu_unconc1_s5=simulation_unl_uncon(case=1,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
-
 ##case2 simulation
 simu_unconc2_s1=simulation_unl_uncon(case=2,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
 simu_unconc2_s2=simulation_unl_uncon(case=2,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
@@ -96,6 +97,61 @@ simu_unconc9_s2=simulation_unl_uncon(case=9,nlist=nlist2,nrep=nrep,nsave=nsave,n
 simu_unconc9_s3=simulation_unl_uncon(case=9,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
 simu_unconc9_s4=simulation_unl_uncon(case=9,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
 simu_unconc9_s5=simulation_unl_uncon(case=9,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+
+##case1 simulation
+bb_simu_unconc1_s1=simulation_unl_uncon_bb(case=1,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc1_s2=simulation_unl_uncon_bb(case=1,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc1_s3=simulation_unl_uncon_bb(case=1,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc1_s4=simulation_unl_uncon_bb(case=1,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc1_s5=simulation_unl_uncon_bb(case=1,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case2 simulation
+bb_simu_unconc2_s1=simulation_unl_uncon_bb(case=2,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc2_s2=simulation_unl_uncon_bb(case=2,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc2_s3=simulation_unl_uncon_bb(case=2,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc2_s4=simulation_unl_uncon_bb(case=2,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc2_s5=simulation_unl_uncon_bb(case=2,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case3 simulation
+bb_simu_unconc3_s1=simulation_unl_uncon_bb(case=3,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc3_s2=simulation_unl_uncon_bb(case=3,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc3_s3=simulation_unl_uncon_bb(case=3,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc3_s4=simulation_unl_uncon_bb(case=3,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc3_s5=simulation_unl_uncon_bb(case=3,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case4 simulation
+bb_simu_unconc4_s1=simulation_unl_uncon_bb(case=4,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc4_s2=simulation_unl_uncon_bb(case=4,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc4_s3=simulation_unl_uncon_bb(case=4,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc4_s4=simulation_unl_uncon_bb(case=4,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc4_s5=simulation_unl_uncon_bb(case=4,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case5 simulation
+bb_simu_unconc5_s1=simulation_unl_uncon_bb(case=5,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc5_s2=simulation_unl_uncon_bb(case=5,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc5_s3=simulation_unl_uncon_bb(case=5,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc5_s4=simulation_unl_uncon_bb(case=5,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc5_s5=simulation_unl_uncon_bb(case=5,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case6 simulation
+bb_simu_unconc6_s1=simulation_unl_uncon_bb(case=6,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc6_s2=simulation_unl_uncon_bb(case=6,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc6_s3=simulation_unl_uncon_bb(case=6,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc6_s4=simulation_unl_uncon_bb(case=6,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc6_s5=simulation_unl_uncon_bb(case=6,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case7 simulation
+bb_simu_unconc7_s1=simulation_unl_uncon_bb(case=7,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc7_s2=simulation_unl_uncon_bb(case=7,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc7_s3=simulation_unl_uncon_bb(case=7,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc7_s4=simulation_unl_uncon_bb(case=7,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc7_s5=simulation_unl_uncon_bb(case=7,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case8 simulation
+bb_simu_unconc8_s1=simulation_unl_uncon_bb(case=8,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc8_s2=simulation_unl_uncon_bb(case=8,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc8_s3=simulation_unl_uncon_bb(case=8,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc8_s4=simulation_unl_uncon_bb(case=8,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc8_s5=simulation_unl_uncon_bb(case=8,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
+##case9 simulation
+bb_simu_unconc9_s1=simulation_unl_uncon_bb(case=9,nlist=nlist1,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc9_s2=simulation_unl_uncon_bb(case=9,nlist=nlist2,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc9_s3=simulation_unl_uncon_bb(case=9,nlist=nlist3,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc9_s4=simulation_unl_uncon_bb(case=9,nlist=nlist4,nrep=nrep,nsave=nsave,nburn=nburn)
+bb_simu_unconc9_s5=simulation_unl_uncon_bb(case=9,nlist=nlist5,nrep=nrep,nsave=nsave,nburn=nburn)
 ```
 
 We need to use the function tranform_list_simu to transform the results
@@ -155,6 +211,60 @@ simu_unconc9_s2=tranform_list_simu(simu_unconc9_s2,nsave=nsave,nrep = nrep)
 simu_unconc9_s3=tranform_list_simu(simu_unconc9_s3,nsave=nsave,nrep = nrep)
 simu_unconc9_s4=tranform_list_simu(simu_unconc9_s4,nsave=nsave,nrep = nrep)
 simu_unconc9_s5=tranform_list_simu(simu_unconc9_s5,nsave=nsave,nrep = nrep)
+##bb
+bb_simu_unconc1_s1=tranform_list_simu(bb_simu_unconc1_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc1_s2=tranform_list_simu(bb_simu_unconc1_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc1_s3=tranform_list_simu(bb_simu_unconc1_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc1_s4=tranform_list_simu(bb_simu_unconc1_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc1_s5=tranform_list_simu(bb_simu_unconc1_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc2_s1=tranform_list_simu(bb_simu_unconc2_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc2_s2=tranform_list_simu(bb_simu_unconc2_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc2_s3=tranform_list_simu(bb_simu_unconc2_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc2_s4=tranform_list_simu(bb_simu_unconc2_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc2_s5=tranform_list_simu(bb_simu_unconc2_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc3_s1=tranform_list_simu(bb_simu_unconc3_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc3_s2=tranform_list_simu(bb_simu_unconc3_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc3_s3=tranform_list_simu(bb_simu_unconc3_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc3_s4=tranform_list_simu(bb_simu_unconc3_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc3_s5=tranform_list_simu(bb_simu_unconc3_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc4_s1=tranform_list_simu(bb_simu_unconc4_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc4_s2=tranform_list_simu(bb_simu_unconc4_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc4_s3=tranform_list_simu(bb_simu_unconc4_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc4_s4=tranform_list_simu(bb_simu_unconc4_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc4_s5=tranform_list_simu(bb_simu_unconc4_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc5_s1=tranform_list_simu(bb_simu_unconc5_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc5_s2=tranform_list_simu(bb_simu_unconc5_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc5_s3=tranform_list_simu(bb_simu_unconc5_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc5_s4=tranform_list_simu(bb_simu_unconc5_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc5_s5=tranform_list_simu(bb_simu_unconc5_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc6_s1=tranform_list_simu(bb_simu_unconc6_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc6_s2=tranform_list_simu(bb_simu_unconc6_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc6_s3=tranform_list_simu(bb_simu_unconc6_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc6_s4=tranform_list_simu(bb_simu_unconc6_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc6_s5=tranform_list_simu(bb_simu_unconc6_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc7_s1=tranform_list_simu(bb_simu_unconc7_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc7_s2=tranform_list_simu(bb_simu_unconc7_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc7_s3=tranform_list_simu(bb_simu_unconc7_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc7_s4=tranform_list_simu(bb_simu_unconc7_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc7_s5=tranform_list_simu(bb_simu_unconc7_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc8_s1=tranform_list_simu(bb_simu_unconc8_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc8_s2=tranform_list_simu(bb_simu_unconc8_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc8_s3=tranform_list_simu(bb_simu_unconc8_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc8_s4=tranform_list_simu(bb_simu_unconc8_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc8_s5=tranform_list_simu(bb_simu_unconc8_s5,nsave=nsave,nrep = nrep)
+
+bb_simu_unconc9_s1=tranform_list_simu(bb_simu_unconc9_s1,nsave=nsave,nrep = nrep)
+bb_simu_unconc9_s2=tranform_list_simu(bb_simu_unconc9_s2,nsave=nsave,nrep = nrep)
+bb_simu_unconc9_s3=tranform_list_simu(bb_simu_unconc9_s3,nsave=nsave,nrep = nrep)
+bb_simu_unconc9_s4=tranform_list_simu(bb_simu_unconc9_s4,nsave=nsave,nrep = nrep)
+bb_simu_unconc9_s5=tranform_list_simu(bb_simu_unconc9_s5,nsave=nsave,nrep = nrep)
 ```
 
 We can then calculate the posterior medians, the 95% credible intervals,
@@ -169,13 +279,31 @@ for(case_i in 1:9){
   simu_name3=paste("simu_uncon","c",case_i,"_s3",sep="")
   simu_name4=paste("simu_uncon","c",case_i,"_s4",sep="")
   simu_name5=paste("simu_uncon","c",case_i,"_s5",sep="")
-  assign(median_name,data.frame(UNL=c(apply(get(simu_name1)[["Est_UNL1"]],FUN=median,MARGIN = 2),
-                                    apply(get(simu_name2)[["Est_UNL1"]],FUN=median,MARGIN = 2),
-                                    apply(get(simu_name3)[["Est_UNL1"]],FUN=median,MARGIN = 2),
-                                    apply(get(simu_name4)[["Est_UNL1"]],FUN=median,MARGIN = 2),
-                                    apply(get(simu_name5)[["Est_UNL1"]],FUN=median,MARGIN = 2)),
-                              size=as.factor(c(rep("s1",nrep),rep("s2",nrep),rep("s3",nrep),
-                                               rep("s4",nrep),rep("s5",nrep)))))
+  assign(median_name,data.frame(UNL=c(apply(get(simu_name1),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name2),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name3),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name4),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name5),FUN=median,MARGIN = 2)),
+                                size=as.factor(c(rep("s1",nrep),rep("s2",nrep),rep("s3",nrep),
+                                                 rep("s4",nrep),rep("s5",nrep)))))
+  
+}
+
+
+for(case_i in 1:9){
+  median_name=paste("bb_median_uncon","c",case_i,sep="")
+  simu_name1=paste("bb_simu_uncon","c",case_i,"_s1",sep="")
+  simu_name2=paste("bb_simu_uncon","c",case_i,"_s2",sep="")
+  simu_name3=paste("bb_simu_uncon","c",case_i,"_s3",sep="")
+  simu_name4=paste("bb_simu_uncon","c",case_i,"_s4",sep="")
+  simu_name5=paste("bb_simu_uncon","c",case_i,"_s5",sep="")
+  assign(median_name,data.frame(UNL=c(apply(get(simu_name1),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name2),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name3),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name4),FUN=median,MARGIN = 2),
+                                      apply(get(simu_name5),FUN=median,MARGIN = 2)),
+                                size=as.factor(c(rep("s1",nrep),rep("s2",nrep),rep("s3",nrep),
+                                                 rep("s4",nrep),rep("s5",nrep)))))
   
 }
 
@@ -187,27 +315,50 @@ for(case_i in 1:9){
   simu_name3=paste("simu_uncon","c",case_i,"_s3",sep="")
   simu_name4=paste("simu_uncon","c",case_i,"_s4",sep="")
   simu_name5=paste("simu_uncon","c",case_i,"_s5",sep="")
-  assign(width_name,data.frame(width=c(apply(get(simu_name1)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.975)-
-                                         apply(get(simu_name1)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.025),
-                                       apply(get(simu_name2)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.975)-
-                                         apply(get(simu_name2)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.025),
-                                       apply(get(simu_name3)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.975)-
-                                         apply(get(simu_name3)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.025),
-                                       apply(get(simu_name4)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.975)-
-                                         apply(get(simu_name4)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.025),
-                                       apply(get(simu_name5)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.975)-
-                                         apply(get(simu_name5)[["Est_UNL1"]],FUN=quantile,MARGIN = 2,probs=0.025)),
+  assign(width_name,data.frame(width=c(apply(get(simu_name1),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name1),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name2),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name2),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name3),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name3),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name4),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name4),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name5),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name5),FUN=quantile,MARGIN = 2,probs=0.025)),
                                size=as.factor(c(rep("s1",nrep),rep("s2",nrep),rep("s3",nrep),
                                                 rep("s4",nrep),rep("s5",nrep)))))
   
+}
+
+
+for(case_i in 1:9){
+  width_name=paste("bb_width_uncon","c",case_i,sep="")
+  simu_name1=paste("bb_simu_uncon","c",case_i,"_s1",sep="")
+  simu_name2=paste("bb_simu_uncon","c",case_i,"_s2",sep="")
+  simu_name3=paste("bb_simu_uncon","c",case_i,"_s3",sep="")
+  simu_name4=paste("bb_simu_uncon","c",case_i,"_s4",sep="")
+  simu_name5=paste("bb_simu_uncon","c",case_i,"_s5",sep="")
+  assign(width_name,data.frame(width=c(apply(get(simu_name1),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name1),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name2),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name2),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name3),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name3),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name4),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name4),FUN=quantile,MARGIN = 2,probs=0.025),
+                                       apply(get(simu_name5),FUN=quantile,MARGIN = 2,probs=0.975)-
+                                         apply(get(simu_name5),FUN=quantile,MARGIN = 2,probs=0.025)),
+                               size=as.factor(c(rep("s1",nrep),rep("s2",nrep),rep("s3",nrep),
+                                                rep("s4",nrep),rep("s5",nrep)))))
+  
+}
 
 for(case_i in 1:9){
   for(size_i in 1:5){
     CI_name=paste("CI95_uncon","c",case_i,"_s",size_i,sep="")
     simu_name=paste("simu_uncon","c",case_i,"_s",size_i,sep="")
-    inte_name="Est_UNL1"
-    assign(CI_name,data.frame(lower=apply(get(simu_name)[[inte_name]],FUN=quantile,MARGIN = 2,probs=0.025),
-                              higher=apply(get(simu_name)[[inte_name]],FUN=quantile,MARGIN = 2,probs=0.975)))
+    assign(CI_name,data.frame(lower=apply(get(simu_name),FUN=quantile,MARGIN = 2,probs=0.025),
+                              higher=apply(get(simu_name),FUN=quantile,MARGIN = 2,probs=0.975)))
     
   }
 }
@@ -220,7 +371,25 @@ for(case_i in 1:9){
                                   true_unl_uncon(case=case_i)<=get(CI_name)[["higher"]])
   }
 }
-  
+
+##bb
+for(case_i in 1:9){
+  for(size_i in 1:5){
+    CI_name=paste("bb_CI95_uncon","c",case_i,"_s",size_i,sep="")
+    simu_name=paste("bb_simu_uncon","c",case_i,"_s",size_i,sep="")
+    assign(CI_name,data.frame(lower=apply(get(simu_name),FUN=quantile,MARGIN = 2,probs=0.025),
+                              higher=apply(get(simu_name),FUN=quantile,MARGIN = 2,probs=0.975)))
+    
+  }
+}
+
+bb_coverage=matrix(0,nrow=9,ncol = 5)
+for(case_i in 1:9){
+  for(size_i in 1:5){
+    CI_name=paste("bb_CI95_uncon","c",case_i,"_s",size_i,sep="")
+    bb_coverage[case_i,size_i]=sum(true_unl_uncon(case=case_i)>=get(CI_name)[["lower"]]&
+                                  true_unl_uncon(case=case_i)<=get(CI_name)[["higher"]])
+  }
 }
 ```
 
@@ -232,121 +401,167 @@ configurations and sample sizes as following.
 
 ``` r
 theme_set(theme_bw())
-median_box_unconc1=ggplot(median_unconc1, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc1     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc1  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc1=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=1), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario I - UNL = ",2.792,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
+  
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc2=ggplot(median_unconc2, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc2     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc2  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc2=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=2), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario I - UNL = ",1.919,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc3=ggplot(median_unconc3, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc3     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc3  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc3=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=3), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario I - UNL = ",1.139,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc4=ggplot(median_unconc4, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc4     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc4  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc4=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=4), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario II - UNL = ",2.527,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc5=ggplot(median_unconc5, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc5     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc5  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc5=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=5), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario II - UNL = ",1.855,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc6=ggplot(median_unconc6, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc6     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc6  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc6=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=6), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario II - UNL = ",1.191,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc7=ggplot(median_unconc7, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc7     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc7  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc7=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=7), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario III - UNL = ",2.508,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc8=ggplot(median_unconc8, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc8     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc8  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc8=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=8), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario III - UNL = ",1.933,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-median_box_unconc9=ggplot(median_unconc9, aes(x=size, y=UNL)) + 
+df <- bind_rows(
+  median_unconc9     %>% mutate(Estimator = "DPM"),
+  bb_median_unconc9  %>% mutate(Estimator = "DPM-BB")
+)
+median_box_unconc9=ggplot(df, aes(x=size, y=UNL,fill = Estimator)) + 
   geom_boxplot()+geom_hline(yintercept = true_unl_uncon(case=9), linetype = "solid", color = "red")+
   ggtitle(paste("Scenario III - UNL = ",1.143,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_y_continuous(breaks =  seq(1,3,by=0.2),limits = c(1,3))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 ```
 
@@ -366,119 +581,164 @@ parameter configurations and sample sizes as following.
 
 ``` r
 ##width box plots
+df <- bind_rows(
+  width_unconc1     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc1  %>% mutate(Estimator = "DPM-BB")
+)
 theme_set(theme_bw())
-width_box_unconc1=ggplot() + geom_boxplot(data=width_unconc1, aes(x=size, y=width))+
+width_box_unconc1=ggplot() + geom_boxplot(data=df, aes(x=size, y=width,fill = Estimator))+
   ggtitle(paste("Scenario I - UNL = ",2.792,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc2=ggplot() + geom_boxplot(data=width_unconc2, aes(x=size, y=width))+
+df <- bind_rows(
+  width_unconc2     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc2  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc2=ggplot() + geom_boxplot(data=df, aes(x=size, y=width,fill = Estimator))+
   ggtitle(paste("Scenario I - UNL = ",1.919,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc3=ggplot() + geom_boxplot(data=width_unconc3, aes(x=size, y=width))+
+df <- bind_rows(
+  width_unconc3     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc3  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc3=ggplot() + geom_boxplot(data=df, aes(x=size, y=width,fill = Estimator))+
   ggtitle(paste("Scenario I - UNL = ",1.139,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc4=ggplot(width_unconc4, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc4     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc4  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc4=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario II - UNL = ",2.527,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc5=ggplot(width_unconc5, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc5     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc5  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc5=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario II - UNL = ",1.855,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc6=ggplot(width_unconc6, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc6     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc6  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc6=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario II - UNL = ",1.191,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc7=ggplot(width_unconc7, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc7     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc7  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc7=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario III - UNL = ",2.508,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc8=ggplot(width_unconc8, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc8     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc8  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc8=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario III - UNL = ",1.933,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 
-width_box_unconc9=ggplot(width_unconc9, aes(x=size, y=width)) + 
+df <- bind_rows(
+  width_unconc9     %>% mutate(Estimator = "DPM"),
+  bb_width_unconc9  %>% mutate(Estimator = "DPM-BB")
+)
+width_box_unconc9=ggplot(df, aes(x=size, y=width,fill = Estimator)) + 
   geom_boxplot()+
   ggtitle(paste("Scenario III - UNL = ",1.143,sep=""))+
   theme(plot.title = element_text(hjust = 0.5))+
-  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.4))+
+  scale_y_continuous(breaks =  seq(0,0.5,by=0.1),limits = c(0,0.5))+
   scale_x_discrete(labels=c("(100,100,100)","(200,200,200)","(500,500,500)","(1000,1000,1000)",
                             "(100,300,500)"))+xlab("Sample Size")+ylab("Interval width")+
+  scale_fill_manual(values = c("DPM" = "blue", "DPM-BB" = "pink")) +
   theme(
     plot.title = element_text(size = 20, face = "bold"),
     axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15)
+    axis.text = element_text(size = 13.5)
   )
 ```
 
