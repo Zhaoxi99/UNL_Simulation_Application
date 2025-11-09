@@ -796,7 +796,7 @@ p_ptau=ggdraw() +
 ```
 
 ``` r
-p_HCI;p_abeta;p_tau;p_ptau
+cowplot::plot_grid(p_HCI,p_abeta,p_tau,p_ptau,ncol = 2)
 ```
 
-![](UNL_application_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->![](UNL_application_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->![](UNL_application_files/figure-gfm/unnamed-chunk-12-3.png)<!-- -->![](UNL_application_files/figure-gfm/unnamed-chunk-12-4.png)<!-- -->
+![](UNL_application_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->

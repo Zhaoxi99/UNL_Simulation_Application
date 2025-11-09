@@ -843,8 +843,8 @@ p_ptau=ggdraw() +
   draw_label("CSF PTau", size = 20, y = 0.97,fontface = "bold")
 ```
 
-```{r}
-p_HCI;p_abeta;p_tau;p_ptau
+```{r, fig.width=27, fig.height=16,dpi=300}
+cowplot::plot_grid(p_HCI,p_abeta,p_tau,p_ptau,ncol = 2)
 ```
 
 ```{r, eval=FALSE}
