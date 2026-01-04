@@ -8,7 +8,7 @@ application to Alzheimer’s disease in Section 5 of the paper "The
 Underlap Coefficient as Measure of a Biomarker’s Discriminatory
 Ability".
 
-As a preliminary step, we load on a clean environment all the required
+As a preliminary step, we load a clean environment with all the required
 libraries.
 
 ``` r
@@ -35,9 +35,76 @@ study.
 source("../functions/adni_application_functions.R")
 ```
 
-After preprocessing, we fit an LSBP model with age and gender as
-covariates to each biomarker–disease-group combination, allowing either
-linear effects or a B-spline basis expansion with 0–3 interior knots.
+We extract the application data from the ADNIMERGE R package and
+preprocess the data before fitting the model.
+
+``` r
+library(ADNIMERGE)
+
+# Use adnimerge and baipetnmrcfdg
+# Aparently the variable HCI is in dataset baipetnmrcfdg
+# merge adnimerge and baipetnmrcfdg
+
+adnimerge_test <- merge(adnimerge, baipetnmrcfdg[, c("RID", "ORIGPROT", "VISCODE", "HCI")], 
+                        by = c("RID", "ORIGPROT", "VISCODE"), all = TRUE)
+
+# Some in baipetnmrcfdg but not in adnimerge: delete them (because most information, like AGE or GENDER is missing)
+adnimerge <- adnimerge_test[!is.na(adnimerge_test$PTGENDER),]
+
+# It seems there are two variables that contain diagnosis
+# DX: diagnosis at every visit (VISCODE)
+# DX.bl: diagnosis at baseline
+
+table(adnimerge[adnimerge$VISCODE == "bl", "DX"])
+table(adnimerge[adnimerge$VISCODE == "bl", "DX.bl"])
+
+# CN (cognitive normal) in DX == CN + SMC (Subjective memory complaints) en DX.bl
+# MCI (mild cognitive impairment) in DX == EMCI (early mild cognitive impairment) + LMCI (late mild cognitive impairment) in DX.bl
+# Dementia en DX == AD (Alzheimer’s disease) en DX.bl
+# At baseline in DX (VISCODE == "bl") there are more NAs
+
+# Data at baseline (and only some of the variables)
+data_baseline <- adnimerge[adnimerge$VISCODE == "bl", c("RID", "ORIGPROT", "COLPROT", "DX", "DX.bl", "AGE", "PTGENDER", "APOE4", "ABETA", "TAU","PTAU", "HCI")]
+data_baseline$PTGENDER <- factor(data_baseline$PTGENDER)
+names(data_baseline)
+summary(data_baseline)
+
+# Biomarkers are codified as "character" (limit of detection????)
+data_baseline$ABETA_num <- data_baseline$ABETA
+data_baseline$ABETA_num[data_baseline$ABETA_num == ">1700"] <- 1700
+data_baseline$ABETA_num[data_baseline$ABETA_num == "<200"] <- 200
+data_baseline$ABETA_num <- as.numeric(data_baseline$ABETA_num)
+
+data_baseline$TAU_num <- data_baseline$TAU
+data_baseline$TAU_num[data_baseline$TAU_num == ">1300"] <- 1300
+data_baseline$TAU_num[data_baseline$TAU_num == "<80"] <- 80
+data_baseline$TAU_num <- as.numeric(data_baseline$TAU_num)
+
+data_baseline$PTAU_num <- data_baseline$PTAU
+data_baseline$PTAU_num[data_baseline$PTAU_num == ">120"] <- 120
+data_baseline$PTAU_num[data_baseline$PTAU_num == "<8"] <- 8
+data_baseline$PTAU_num <- as.numeric(data_baseline$PTAU_num)
+summary(data_baseline)
+new_adni=data.frame(RID=data_baseline$RID,
+                    DX=ifelse(data_baseline$DX.bl == "CN" | data_baseline$DX.bl == "SMC",1,
+                              ifelse(data_baseline$DX.bl == "EMCI" | data_baseline$DX.bl == "LMCI",2,3)),
+                    gender=ifelse(data_baseline$PTGENDER=="Male",1,2),
+                    age=data_baseline$AGE,
+                    abeta=data_baseline$ABETA_num,
+                    tau=data_baseline$TAU_num,
+                    ptau=data_baseline$PTAU_num,
+                    HCI=data_baseline$HCI
+                    )
+
+adni=new_adni
+adni=na.omit(adni)
+
+save(adni,file = "//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/adni_data.RData")
+```
+
+We fit an LSBP model with age and gender as covariates to each
+biomarker–disease-group combination, allowing either linear effects or a
+B-spline basis expansion with 0–3 interior knots.
 
 ``` r
 file="//csce.datastore.ed.ac.uk/csce/maths/groups/mdt/adni_data.RData"
@@ -799,4 +866,4 @@ p_ptau=ggdraw() +
 cowplot::plot_grid(p_HCI,p_abeta,p_tau,p_ptau,ncol = 2)
 ```
 
-![](UNL_application_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](UNL_application_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
